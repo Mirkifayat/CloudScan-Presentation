@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CloudScan - Presentation</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand: { dark: '#050505', maroon: '#50000A', red: '#B91C1C', accent: '#FF0033' },
+        terminal: { bg: '#0A0F0A', green: '#00FF41', dim: '#00CC33', border: '#1A3A1A' }
+      },
+      fontFamily: { inter: ['Inter', 'sans-serif'] },
+      animation: {
+        'spin-slow': 'spin 8s linear infinite',
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'scan-line': 'scanLine 2s linear infinite',
+        'typing': 'typing 3s steps(40) 1s forwards, blink 0.75s step-end infinite',
+        'fade-up': 'fadeUp 0.6s ease-out forwards',
+        'fade-in': 'fadeIn 0.5s ease-out forwards',
+        'slide-left': 'slideLeft 0.5s ease-out forwards',
+        'slide-right': 'slideRight 0.5s ease-out forwards',
+        'float': 'float 3s ease-in-out infinite',
+      }
+    }
+  }
+}
+</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #050505; color: #fff; overflow: hidden; height: 100vh; }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #0A0A0A; }
+  ::-webkit-scrollbar-thumb { background: #50000A; border-radius: 2px; }
+
+  @keyframes scanLine {
+    0% { top: 0; opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slideLeft {
+    from { opacity: 0; transform: translateX(60px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideRight {
+    from { opacity: 0; transform: translateX(-60px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes blink {
+    50% { border-color: transparent; }
+  }
+  @keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+  @keyframes glitch {
+    0%, 90%, 100% { transform: translate(0); }
+    92% { transform: translate(-2px, 1px); }
+    94% { transform: translate(2px, -1px); }
+    96% { transform: translate(-1px, -1px); }
+    98% { transform: translate(1px, 2px); }
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 5px rgba(0,255,65,0.2), 0 0 10px rgba(0,255,65,0.1); }
+    50% { box-shadow: 0 0 15px rgba(0,255,65,0.4), 0 0 30px rgba(0,255,65,0.2); }
+  }
+  @keyframes dataFlow {
+    0% { left: 0%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+  }
+
+  .slide { display: none; opacity: 0; position: absolute; inset: 0; }
+  .slide.active { display: flex; animation: fadeIn 0.5s ease-out forwards; }
+  .slide.active .anim-up { animation: fadeUp 0.6s ease-out forwards; opacity: 0; }
+  .slide.active .anim-left { animation: slideLeft 0.6s ease-out forwards; opacity: 0; }
+  .slide.active .anim-right { animation: slideRight 0.6s ease-out forwards; opacity: 0; }
+  .slide.active .delay-1 { animation-delay: 0.15s; }
+  .slide.active .delay-2 { animation-delay: 0.3s; }
+  .slide.active .delay-3 { animation-delay: 0.45s; }
+  .slide.active .delay-4 { animation-delay: 0.6s; }
+  .slide.active .delay-5 { animation-delay: 0.75s; }
+  .slide.active .delay-6 { animation-delay: 0.9s; }
+  .slide.active .delay-7 { animation-delay: 1.05s; }
+
+  .terminal-box {
+    background: #0A0F0A;
+    border: 1px solid #1A3A1A;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    position: relative;
+    overflow: hidden;
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+  .terminal-box::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00FF41, transparent);
+    animation: scanLine 2.5s linear infinite;
+    z-index: 1;
+  }
+  .terminal-header {
+    background: #111;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid #1A3A1A;
+  }
+  .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  .glitch-text:hover { animation: glitch 2s infinite; }
+
+  .flow-arrow {
+    position: relative;
+    overflow: hidden;
+  }
+  .flow-arrow::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: #00FF41;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #00FF41;
+    animation: dataFlow 1.5s linear infinite;
+  }
+
+  .nav-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #333;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .nav-dot.active {
+    background: #B91C1C;
+    box-shadow: 0 0 10px rgba(185,28,28,0.5);
+    transform: scale(1.3);
+  }
+  .nav-dot:hover { background: #50000A; }
+
+  .team-card {
+    background: linear-gradient(135deg, rgba(80,0,10,0.3), rgba(10,10,10,0.8));
+    border: 1px solid rgba(80,0,10,0.4);
+    transition: all 0.4s;
+  }
+  .team-card:hover {
+    border-color: #B91C1C;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(185,28,28,0.2);
+  }
+
+  .tech-badge {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: all 0.3s;
+  }
+  .tech-badge:hover {
+    border-color: #B91C1C;
+    background: rgba(185,28,28,0.08);
+  }
+
+  .slide-number {
+    font-size: 8rem;
+    font-weight: 900;
+    -webkit-text-stroke: 1px rgba(80,0,10,0.3);
+    color: transparent;
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    line-height: 1;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- Background Glows -->
+<div class="fixed inset-0 pointer-events-none z-0">
+  <div class="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-brand-maroon/20 rounded-full blur-[150px]"></div>
+  <div class="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-brand-red/10 rounded-full blur-[150px]"></div>
+  <div class="absolute top-[40%] left-[50%] w-[300px] h-[300px] bg-terminal-green/5 rounded-full blur-[120px]"></div>
+</div>
+
+<!-- Slide Container -->
+<div id="slideContainer" class="relative w-full h-full z-10">
+
+  <!-- ==================== SLIDE 0: TEAM INTRO ==================== -->
+  <div class="slide active flex-col items-center justify-center px-8" data-slide="0">
+    <div class="slide-number">00</div>
+    <div class="text-center max-w-5xl mx-auto relative">
+      <!-- Top Label -->
+      <div class="anim-up delay-1 mb-6">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-terminal-green/30 bg-terminal-green/5 text-terminal-green text-xs font-mono tracking-widest uppercase">
+          <span class="w-2 h-2 rounded-full bg-terminal-green animate-pulse"></span>
+          Meet the Team
+        </span>
+      </div>
+
+      <!-- Title -->
+      <h1 class="anim-up delay-2 text-5xl md:text-7xl font-black tracking-tighter leading-[0.95] mb-4 glitch-text">
+        <span class="text-white">CLOUD</span><span class="text-brand-red">SCAN</span>
+      </h1>
+      <p class="anim-up delay-3 text-neutral-400 text-sm md:text-base font-light tracking-wide mb-16">
+        Architecting a Cloud-Based Network Reconnaissance Tool
+      </p>
+
+      <!-- Team Cards -->
+      <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8">
+        <!-- Kifayat -->
+        <div class="anim-up delay-4 team-card rounded-2xl p-8 w-full md:w-80 text-center">
+          <div class="w-20 h-20 mx-auto mb-5 rounded-full bg-gradient-to-br from-brand-red to-brand-maroon flex items-center justify-center text-2xl font-black">
+            KS
+          </div>
+          <h3 class="text-xl font-bold tracking-tight mb-1">Kifayat Salam</h3>
+          <div class="flex items-center justify-center gap-2 mb-3">
+            <span class="iconify text-terminal-green" data-icon="mdi:shield-check" data-width="16"></span>
+            <span class="text-terminal-green text-xs font-mono tracking-wider uppercase"></span>
+          </div>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-white/5 border border-white/10 text-neutral-300 text-xs font-mono">
+            <span class="iconify" data-icon="mdi:school" data-width="14"></span>
+            MCA 2nd Sem
+          </div>
+        </div>
+
+        <!-- Asif -->
+        <div class="anim-up delay-5 team-card rounded-2xl p-8 w-full md:w-80 text-center">
+          <div class="w-20 h-20 mx-auto mb-5 rounded-full bg-gradient-to-br from-brand-red to-brand-maroon flex items-center justify-center text-2xl font-black">
+            A
+          </div>
+          <h3 class="text-xl font-bold tracking-tight mb-1">Asif</h3>
+          <div class="flex items-center justify-center gap-2 mb-3">
+            <span class="iconify text-terminal-green" data-icon="mdi:code-braces" data-width="16"></span>
+            <span class="text-terminal-green text-xs font-mono tracking-wider uppercase"></span>
+          </div>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-white/5 border border-white/10 text-neutral-300 text-xs font-mono">
+            <span class="iconify" data-icon="mdi:school" data-width="14"></span>
+            MCA 2nd Sem 
+          </div>
+        </div>
+
+        <!-- Ishtiyak -->
+        <div class="anim-up delay-6 team-card rounded-2xl p-8 w-full md:w-80 text-center">
+          <div class="w-20 h-20 mx-auto mb-5 rounded-full bg-gradient-to-br from-brand-red to-brand-maroon flex items-center justify-center text-2xl font-black">
+            I
+          </div>
+          <h3 class="text-xl font-bold tracking-tight mb-1">Ishtiyak</h3>
+          <div class="flex items-center justify-center gap-2 mb-3">
+            <span class="iconify text-terminal-green" data-icon="mdi:server-security" data-width="16"></span>
+            <span class="text-terminal-green text-xs font-mono tracking-wider uppercase"></span>
+          </div>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-white/5 border border-white/10 text-neutral-300 text-xs font-mono">
+            <span class="iconify" data-icon="mdi:school" data-width="14"></span>
+            MCA 2nd Sem
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom hint -->
+      <div class="anim-up delay-7 mt-12 flex items-center justify-center gap-2 text-neutral-600 text-xs">
+        <span class="iconify" data-icon="mdi:arrow-right" data-width="14"></span>
+        Press arrow key or click to continue
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 1: INTRO & OBJECTIVE ==================== -->
+  <div class="slide flex-col items-center justify-center px-8" data-slide="1">
+    <div class="slide-number">01</div>
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12 w-full">
+      <!-- Left: Text -->
+      <div class="flex-1">
+        <div class="anim-up delay-1 mb-4">
+          <span class="text-brand-red text-xs font-mono tracking-widest uppercase">Slide 01</span>
+        </div>
+        <h2 class="anim-up delay-2 text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-6">
+          Introduction<br/>& <span class="text-brand-red">Objective</span>
+        </h2>
+
+        <div class="space-y-4">
+          <div class="anim-right delay-3 flex items-start gap-3">
+            <span class="iconify text-brand-red mt-1 flex-shrink-0" data-icon="mdi:target" data-width="20"></span>
+            <p class="text-neutral-300 text-sm leading-relaxed">A lightweight, <strong class="text-white">web-based vulnerability scanner</strong> and network reconnaissance tool.</p>
+          </div>
+          <div class="anim-right delay-4 flex items-start gap-3">
+            <span class="iconify text-brand-red mt-1 flex-shrink-0" data-icon="mdi:alert-circle" data-width="20"></span>
+            <p class="text-neutral-300 text-sm leading-relaxed"><strong class="text-white">The Problem:</strong> Traditional scanning requires local Kali Linux installations and terminal expertise.</p>
+          </div>
+          <div class="anim-right delay-5 flex items-start gap-3">
+            <span class="iconify text-terminal-green mt-1 flex-shrink-0" data-icon="mdi:check-circle" data-width="20"></span>
+            <p class="text-neutral-300 text-sm leading-relaxed"><strong class="text-white">The Solution:</strong> CloudScan abstracts complexity — deep reconnaissance from <strong class="text-terminal-green">any web browser</strong>.</p>
+          </div>
+          <div class="anim-right delay-6 flex items-start gap-3">
+            <span class="iconify text-yellow-500 mt-1 flex-shrink-0" data-icon="mdi:shield-alert" data-width="20"></span>
+            <p class="text-neutral-400 text-xs leading-relaxed italic"><strong class="text-yellow-500">Disclaimer:</strong> Educational purposes only. Authorization required.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Terminal Mockup -->
+      <div class="anim-left delay-4 flex-1 w-full max-w-md">
+        <div class="terminal-box p-0">
+          <div class="terminal-header">
+            <div class="terminal-dot bg-red-500"></div>
+            <div class="terminal-dot bg-yellow-500"></div>
+            <div class="terminal-dot bg-green-500"></div>
+            <span class="text-neutral-500 text-[10px] font-mono ml-2">cloudscan://home</span>
+          </div>
+          <div class="p-5 text-xs font-mono leading-relaxed">
+            <p class="text-terminal-green">$ cloudscan --version</p>
+            <p class="text-neutral-400 mt-1">CloudScan v1.0.0</p>
+            <p class="text-neutral-500 mt-1">─────────────────────────</p>
+            <p class="text-terminal-green mt-2">$ cloudscan scanme.nmap.org</p>
+            <p class="text-neutral-400 mt-1">[+] Initializing scan...</p>
+            <p class="text-neutral-400">[+] Target: scanme.nmap.org</p>
+            <p class="text-neutral-400">[+] Flags: -sT -sV --script=default</p>
+            <p class="text-terminal-dim mt-1">[■■■■■■■■■■■■■■■■] 100%</p>
+            <p class="text-terminal-green mt-2">PORT    STATE  SERVICE</p>
+            <p class="text-neutral-300">22/tcp  open   ssh</p>
+            <p class="text-neutral-300">80/tcp  open   http</p>
+            <p class="text-neutral-300">443/tcp open   https</p>
+            <p class="text-terminal-green mt-2">$ <span class="animate-pulse">▊</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 2: UI/UX ==================== -->
+  <div class="slide flex-col items-center justify-center px-8" data-slide="2">
+    <div class="slide-number">02</div>
+    <div class="max-w-6xl mx-auto w-full">
+      <div class="anim-up delay-1 mb-2">
+        <span class="text-brand-red text-xs font-mono tracking-widest uppercase">Slide 02</span>
+      </div>
+      <h2 class="anim-up delay-2 text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-10">
+        The UI/UX — How <span class="text-brand-red">Pages Work</span>
+      </h2>
+
+      <!-- Three States -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- State 1: Empty -->
+        <div class="anim-up delay-3">
+          <div class="text-xs font-mono text-terminal-green mb-3 tracking-wider">01 — EMPTY STATE</div>
+          <div class="terminal-box p-0">
+            <div class="terminal-header">
+              <div class="terminal-dot bg-red-500"></div>
+              <div class="terminal-dot bg-yellow-500"></div>
+              <div class="terminal-dot bg-green-500"></div>
+            </div>
+            <div class="p-5 flex flex-col items-center justify-center h-48">
+              <span class="iconify text-neutral-700 mb-2" data-icon="mdi:magnify" data-width="40"></span>
+              <p class="text-neutral-600 text-xs font-mono">Enter target to begin...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- State 2: Scanning -->
+        <div class="anim-up delay-4">
+          <div class="text-xs font-mono text-yellow-500 mb-3 tracking-wider">02 — SCANNING...</div>
+          <div class="terminal-box p-0">
+            <div class="terminal-header">
+              <div class="terminal-dot bg-red-500"></div>
+              <div class="terminal-dot bg-yellow-500"></div>
+              <div class="terminal-dot bg-green-500"></div>
+            </div>
+            <div class="p-5 flex flex-col items-center justify-center h-48">
+              <div class="w-10 h-10 border-2 border-terminal-green/30 border-t-terminal-green rounded-full animate-spin mb-3"></div>
+              <p class="text-terminal-green text-xs font-mono animate-pulse">Scanning in progress...</p>
+              <div class="w-32 h-1 bg-neutral-800 rounded mt-2 overflow-hidden">
+                <div class="h-full bg-terminal-green/60 rounded" style="width:65%; animation: pulse 1.5s ease-in-out infinite;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- State 3: Results -->
+        <div class="anim-up delay-5">
+          <div class="text-xs font-mono text-terminal-green mb-3 tracking-wider">03 — RESULTS</div>
+          <div class="terminal-box p-0">
+            <div class="terminal-header">
+              <div class="terminal-dot bg-red-500"></div>
+              <div class="terminal-dot bg-yellow-500"></div>
+              <div class="terminal-dot bg-green-500"></div>
+            </div>
+            <div class="p-4 h-48 overflow-hidden">
+              <p class="text-terminal-green text-[10px] font-mono">PORT    STATE SERVICE</p>
+              <p class="text-neutral-300 text-[10px] font-mono mt-1">22/tcp  open  ssh</p>
+              <p class="text-neutral-300 text-[10px] font-mono">80/tcp  open  http</p>
+              <p class="text-neutral-300 text-[10px] font-mono">443/tcp open  https</p>
+              <p class="text-neutral-300 text-[10px] font-mono">3306/tcp closed mysql</p>
+              <p class="text-neutral-500 text-[10px] font-mono mt-2">| vuln: CVE-2023-...</p>
+              <p class="text-yellow-500/70 text-[10px] font-mono">|_ WARN: outdated</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Points -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
+        <div class="anim-up delay-3 tech-badge rounded-xl p-4 text-center">
+          <span class="iconify text-brand-red mx-auto mb-2" data-icon="mdi:file-document-outline" data-width="24"></span>
+          <p class="text-white text-xs font-bold">SPA Design</p>
+          <p class="text-neutral-500 text-[10px] mt-1">Single HTML file</p>
+        </div>
+        <div class="anim-up delay-4 tech-badge rounded-xl p-4 text-center">
+          <span class="iconify text-brand-red mx-auto mb-2" data-icon="mdi:swap-horizontal" data-width="24"></span>
+          <p class="text-white text-xs font-bold">Async Execution</p>
+          <p class="text-neutral-500 text-[10px] mt-1">No page reload</p>
+        </div>
+        <div class="anim-up delay-5 tech-badge rounded-xl p-4 text-center">
+          <span class="iconify text-brand-red mx-auto mb-2" data-icon="mdi:eye-outline" data-width="24"></span>
+          <p class="text-white text-xs font-bold">User Feedback</p>
+          <p class="text-neutral-500 text-[10px] mt-1">"Scanning..." indicator</p>
+        </div>
+        <div class="anim-up delay-6 tech-badge rounded-xl p-4 text-center">
+          <span class="iconify text-brand-red mx-auto mb-2" data-icon="mdi:code-tags" data-width="24"></span>
+          <p class="text-white text-xs font-bold">Dynamic DOM</p>
+          <p class="text-neutral-500 text-[10px] mt-1">JS injects results</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 3: ARCHITECTURE ==================== -->
+  <div class="slide flex-col items-center justify-center px-8" data-slide="3">
+    <div class="slide-number">03</div>
+    <div class="max-w-6xl mx-auto w-full">
+      <div class="anim-up delay-1 mb-2">
+        <span class="text-brand-red text-xs font-mono tracking-widest uppercase">Slide 03</span>
+      </div>
+      <h2 class="anim-up delay-2 text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-10">
+        Architecture — <span class="text-brand-red">Data Flow</span>
+      </h2>
+
+      <!-- Flow Diagram -->
+      <div class="anim-up delay-3 relative flex items-center justify-between gap-2 md:gap-4 mb-10 px-2">
+        <!-- Browser -->
+        <div class="flex-shrink-0 text-center">
+          <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-brand-maroon/40 border border-brand-red/30 flex items-center justify-center mx-auto mb-2">
+            <span class="iconify text-white" data-icon="mdi:web" data-width="28"></span>
+          </div>
+          <p class="text-white text-[10px] md:text-xs font-bold">Browser</p>
+          <p class="text-neutral-500 text-[8px] md:text-[10px]">Input Target</p>
+        </div>
+
+        <!-- Arrow -->
+        <div class="flex-1 relative h-0.5 bg-neutral-800 flow-arrow">
+          <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-neutral-600 text-[8px] font-mono whitespace-nowrap bg-brand-dark px-1">POST /scan</span>
+        </div>
+
+        <!-- API -->
+        <div class="flex-shrink-0 text-center">
+          <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-brand-maroon/40 border border-brand-red/30 flex items-center justify-center mx-auto mb-2">
+            <span class="iconify text-white" data-icon="mdi:api" data-width="28"></span>
+          </div>
+          <p class="text-white text-[10px] md:text-xs font-bold">Flask API</p>
+          <p class="text-neutral-500 text-[8px] md:text-[10px]">Route Request</p>
+        </div>
+
+        <!-- Arrow -->
+        <div class="flex-1 relative h-0.5 bg-neutral-800 flow-arrow" style="animation-delay: 0.5s;">
+          <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-neutral-600 text-[8px] font-mono whitespace-nowrap bg-brand-dark px-1">subprocess</span>
+        </div>
+
+        <!-- Python -->
+        <div class="flex-shrink-0 text-center">
+          <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-brand-maroon/40 border border-brand-red/30 flex items-center justify-center mx-auto mb-2">
+            <span class="iconify text-white" data-icon="mdi:language-python" data-width="28"></span>
+          </div>
+          <p class="text-white text-[10px] md:text-xs font-bold">Python</p>
+          <p class="text-neutral-500 text-[8px] md:text-[10px]">Build Cmd</p>
+        </div>
+
+        <!-- Arrow -->
+        <div class="flex-1 relative h-0.5 bg-neutral-800 flow-arrow" style="animation-delay: 1s;">
+          <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-neutral-600 text-[8px] font-mono whitespace-nowrap bg-brand-dark px-1">exec()</span>
+        </div>
+
+        <!-- Linux -->
+        <div class="flex-shrink-0 text-center">
+          <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-brand-maroon/40 border border-brand-red/30 flex items-center justify-center mx-auto mb-2">
+            <span class="iconify text-white" data-icon="mdi:linux" data-width="28"></span>
+          </div>
+          <p class="text-white text-[10px] md:text-xs font-bold">Linux OS</p>
+          <p class="text-neutral-500 text-[8px] md:text-[10px]">Run Nmap</p>
+        </div>
+
+        <!-- Arrow -->
+        <div class="flex-1 relative h-0.5 bg-neutral-800 flow-arrow" style="animation-delay: 1.5s;">
+          <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-neutral-600 text-[8px] font-mono whitespace-nowrap bg-brand-dark px-1">TCP probe</span>
+        </div>
+
+        <!-- Target -->
+        <div class="flex-shrink-0 text-center">
+          <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-terminal-green/10 border border-terminal-green/30 flex items-center justify-center mx-auto mb-2">
+            <span class="iconify text-terminal-green" data-icon="mdi:server-network" data-width="28"></span>
+          </div>
+          <p class="text-terminal-green text-[10px] md:text-xs font-bold">Target</p>
+          <p class="text-neutral-500 text-[8px] md:text-[10px]">scanme.nmap.org</p>
+        </div>
+      </div>
+
+      <!-- Steps -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="anim-up delay-4 tech-badge rounded-xl p-5">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="w-6 h-6 rounded bg-brand-red/20 text-brand-red text-xs font-bold flex items-center justify-center">1</span>
+            <span class="text-white text-xs font-bold">Input & Request</span>
+          </div>
+          <p class="text-neutral-400 text-[11px] leading-relaxed">User enters target. JS fires async POST request carrying target data to backend endpoint.</p>
+        </div>
+        <div class="anim-up delay-5 tech-badge rounded-xl p-5">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="w-6 h-6 rounded bg-brand-red/20 text-brand-red text-xs font-bold flex items-center justify-center">2</span>
+            <span class="text-white text-xs font-bold">Process & Execute</span>
+          </div>
+          <p class="text-neutral-400 text-[11px] leading-relaxed">Flask constructs optimized Nmap command. Python spawns OS process via <span class="text-terminal-green font-mono">subprocess</span>.</p>
+        </div>
+        <div class="anim-up delay-6 tech-badge rounded-xl p-5">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="w-6 h-6 rounded bg-brand-red/20 text-brand-red text-xs font-bold flex items-center justify-center">3</span>
+            <span class="text-white text-xs font-bold">Scan & Respond</span>
+          </div>
+          <p class="text-neutral-400 text-[11px] leading-relaxed">Nmap runs <span class="font-mono text-terminal-green">-sT -sV --script=default</span>. Raw output packaged as JSON → returned to browser.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 4: TECH STACK ==================== -->
+  <div class="slide flex-col items-center justify-center px-8" data-slide="4">
+    <div class="slide-number">04</div>
+    <div class="max-w-6xl mx-auto w-full">
+      <div class="anim-up delay-1 mb-2">
+        <span class="text-brand-red text-xs font-mono tracking-widest uppercase">Slide 04</span>
+      </div>
+      <h2 class="anim-up delay-2 text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-10">
+        Tech Stack — Why These <span class="text-brand-red">Libraries?</span>
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Flask -->
+        <div class="anim-up delay-3 tech-badge rounded-2xl p-6 flex gap-4">
+          <div class="w-14 h-14 rounded-xl bg-brand-maroon/50 border border-brand-red/20 flex items-center justify-center flex-shrink-0">
+            <span class="iconify text-white" data-icon="mdi:lightning-bolt" data-width="28"></span>
+          </div>
+          <div>
+            <h3 class="text-white font-bold text-sm mb-1">Flask</h3>
+            <p class="text-neutral-400 text-[11px] leading-relaxed">Lightweight micro-framework. No Django bloat — exactly what's needed: fast, reliable REST API routing.</p>
+          </div>
+        </div>
+
+        <!-- subprocess -->
+        <div class="anim-up delay-4 tech-badge rounded-2xl p-6 flex gap-4">
+          <div class="w-14 h-14 rounded-xl bg-brand-maroon/50 border border-brand-red/20 flex items-center justify-center flex-shrink-0">
+            <span class="iconify text-white" data-icon="mdi:terminal" data-width="28"></span>
+          </div>
+          <div>
+            <h3 class="text-white font-bold text-sm mb-1">subprocess</h3>
+            <p class="text-neutral-400 text-[11px] leading-relaxed">Most critical library. Securely spawns OS processes, executes Nmap binary, captures stdout/stderr without crashing the server.</p>
+          </div>
+        </div>
+
+        <!-- os -->
+        <div class="anim-up delay-5 tech-badge rounded-2xl p-6 flex gap-4">
+          <div class="w-14 h-14 rounded-xl bg-brand-maroon/50 border border-brand-red/20 flex items-center justify-center flex-shrink-0">
+            <span class="iconify text-white" data-icon="mdi:cog" data-width="28"></span>
+          </div>
+          <div>
+            <h3 class="text-white font-bold text-sm mb-1">os</h3>
+            <p class="text-neutral-400 text-[11px] leading-relaxed">Dynamically fetches env variables like <span class="font-mono text-terminal-green">$PORT</span>. Best practice for cloud deployments with dynamic port assignment.</p>
+          </div>
+        </div>
+
+        <!-- gunicorn -->
+        <div class="anim-up delay-6 tech-badge rounded-2xl p-6 flex gap-4">
+          <div class="w-14 h-14 rounded-xl bg-brand-maroon/50 border border-brand-red/20 flex items-center justify-center flex-shrink-0">
+            <span class="iconify text-white" data-icon="mdi:server" data-width="28"></span>
+          </div>
+          <div>
+            <h3 class="text-white font-bold text-sm mb-1">Gunicorn (WSGI)</h3>
+            <p class="text-neutral-400 text-[11px] leading-relaxed">Flask's dev server isn't production-ready. Gunicorn handles concurrency + <span class="font-mono text-terminal-green">--timeout 100</span> prevents hangups during deep scans.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logos row -->
+      <div class="anim-up delay-7 flex items-center justify-center gap-8 mt-8">
+        <div class="flex items-center gap-2 text-neutral-600">
+          <span class="iconify" data-icon="mdi:language-python" data-width="24"></span>
+          <span class="text-xs font-mono">Python</span>
+        </div>
+        <div class="w-px h-4 bg-neutral-800"></div>
+        <div class="flex items-center gap-2 text-neutral-600">
+          <span class="iconify" data-icon="mdi:lightning-bolt" data-width="24"></span>
+          <span class="text-xs font-mono">Flask</span>
+        </div>
+        <div class="w-px h-4 bg-neutral-800"></div>
+        <div class="flex items-center gap-2 text-neutral-600">
+          <span class="iconify" data-icon="mdi:radar" data-width="24"></span>
+          <span class="text-xs font-mono">Nmap</span>
+        </div>
+        <div class="w-px h-4 bg-neutral-800"></div>
+        <div class="flex items-center gap-2 text-neutral-600">
+          <span class="iconify" data-icon="mdi:docker" data-width="24"></span>
+          <span class="text-xs font-mono">Docker</span>
+        </div>
+        <div class="w-px h-4 bg-neutral-800"></div>
+        <div class="flex items-center gap-2 text-neutral-600">
+          <span class="iconify" data-icon="mdi:cloud" data-width="24"></span>
+          <span class="text-xs font-mono">Render</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 5: DEPLOYMENT CHALLENGES ==================== -->
+  <div class="slide flex-col items-center justify-center px-8" data-slide="5">
+    <div class="slide-number">05</div>
+    <div class="max-w-6xl mx-auto w-full">
+      <div class="anim-up delay-1 mb-2">
+        <span class="text-brand-red text-xs font-mono tracking-widest uppercase">Slide 05</span>
+      </div>
+      <h2 class="anim-up delay-2 text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-10">
+        Cloud Deployment<br/><span class="text-brand-red">Challenges Overcome</span>
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Challenge 1 -->
+        <div class="anim-up delay-3">
+          <div class="rounded-2xl border border-red-900/40 bg-red-950/10 overflow-hidden">
+            <div class="bg-red-950/30 px-5 py-3 flex items-center gap-2 border-b border-red-900/30">
+              <span class="iconify text-brand-red" data-icon="mdi:lock-alert" data-width="18"></span>
+              <span class="text-brand-red text-xs font-bold tracking-wider uppercase">Challenge 1</span>
+            </div>
+            <div class="p-6">
+              <h3 class="text-white font-bold text-base mb-3">The Raw Socket Restriction</h3>
+              <p class="text-neutral-400 text-[11px] leading-relaxed mb-4">Cloud providers run <strong class="text-white">unprivileged Docker containers</strong>, blocking standard SYN stealth scans (<span class="font-mono text-brand-red">-sS</span>).</p>
+              <div class="flex items-start gap-2 bg-terminal-green/5 border border-terminal-green/20 rounded-lg p-3">
+                <span class="iconify text-terminal-green mt-0.5 flex-shrink-0" data-icon="mdi:lightbulb-on" data-width="16"></span>
+                <div>
+                  <p class="text-terminal-green text-[10px] font-bold uppercase tracking-wider mb-1">Solution</p>
+                  <p class="text-neutral-300 text-[11px] leading-relaxed">Engineered TCP Connect scans (<span class="font-mono text-terminal-green">-sT</span>) — fully compliant with unprivileged containers while maintaining deep reconnaissance capability.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Challenge 2 -->
+        <div class="anim-up delay-4">
+          <div class="rounded-2xl border border-yellow-900/40 bg-yellow-950/10 overflow-hidden">
+            <div class="bg-yellow-950/30 px-5 py-3 flex items-center gap-2 border-b border-yellow-900/30">
+              <span class="iconify text-yellow-500" data-icon="mdi:timer-alert" data-width="18"></span>
+              <span class="text-yellow-500 text-xs font-bold tracking-wider uppercase">Challenge 2</span>
+            </div>
+            <div class="p-6">
+              <h3 class="text-white font-bold text-base mb-3">The Timeout Battle</h3>
+              <p class="text-neutral-400 text-[11px] leading-relaxed mb-4">Deep intelligence takes time, but cloud servers <strong class="text-white">kill long-running processes</strong>. Balancing depth vs. stability was critical.</p>
+              <div class="flex items-start gap-2 bg-terminal-green/5 border border-terminal-green/20 rounded-lg p-3">
+                <span class="iconify text-terminal-green mt-0.5 flex-shrink-0" data-icon="mdi:lightbulb-on" data-width="16"></span>
+                <div>
+                  <p class="text-terminal-green text-[10px] font-bold uppercase tracking-wider mb-1">Solution</p>
+                  <p class="text-neutral-300 text-[11px] leading-relaxed">Combined fast flags <span class="font-mono text-terminal-green">-F -T4 --max-retries 1</span> with Gunicorn <span class="font-mono text-terminal-green">--timeout 100</span> override for stable deep scans.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deploy Badge -->
+      <div class="anim-up delay-5 flex items-center justify-center mt-8">
+        <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-green-900/20 border border-green-800/30">
+          <span class="iconify text-green-400" data-icon="mdi:check-decagram" data-width="20"></span>
+          <span class="text-green-400 text-xs font-mono tracking-wider">DEPLOY LIVE — Render Cloud</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 6: CONCLUSION ==================== -->
+  <div class="slide flex-col items-center justify-center px-8" data-slide="6">
+    <div class="slide-number">06</div>
+    <div class="max-w-5xl mx-auto w-full text-center">
+      <div class="anim-up delay-1 mb-2">
+        <span class="text-brand-red text-xs font-mono tracking-widest uppercase">Slide 06</span>
+      </div>
+      <h2 class="anim-up delay-2 text-4xl md:text-6xl font-black tracking-tighter leading-tight mb-4">
+        Conclusion & <span class="text-brand-red">Future Scope</span>
+      </h2>
+      <p class="anim-up delay-3 text-neutral-400 text-sm md:text-base font-light max-w-2xl mx-auto mb-12">
+        A fully functional, containerized, cloud-based threat intelligence tool — built from scratch.
+      </p>
+
+      <!-- Success Banner -->
+      <div class="anim-up delay-3 inline-flex items-center gap-4 px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-maroon/40 to-transparent border border-brand-red/20 mb-12">
+        <span class="iconify text-terminal-green animate-float" data-icon="mdi:check-circle" data-width="32"></span>
+        <div class="text-left">
+          <p class="text-white font-bold text-sm">Project Successfully Deployed</p>
+          <p class="text-neutral-400 text-[11px]">Cloud-hosted • Containerized • Browser-accessible</p>
+        </div>
+      </div>
+
+      <!-- Future Features -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-left">
+        <div class="anim-up delay-4 tech-badge rounded-xl p-6">
+          <span class="iconify text-brand-red mb-3" data-icon="mdi:file-pdf-box" data-width="28"></span>
+          <h3 class="text-white font-bold text-sm mb-2">PDF Export</h3>
+          <p class="text-neutral-400 text-[11px] leading-relaxed">Export scan results to formatted PDF reports for documentation and compliance.</p>
+        </div>
+        <div class="anim-up delay-5 tech-badge rounded-xl p-6">
+          <span class="iconify text-brand-red mb-3" data-icon="mdi:key-chain" data-width="28"></span>
+          <h3 class="text-white font-bold text-sm mb-2">API Key Auth</h3>
+          <p class="text-neutral-400 text-[11px] leading-relaxed">Add authentication layer to restrict access and track usage per authorized user.</p>
+        </div>
+        <div class="anim-up delay-6 tech-badge rounded-xl p-6">
+          <span class="iconify text-brand-red mb-3" data-icon="mdi:database" data-width="28"></span>
+          <h3 class="text-white font-bold text-sm mb-2">Scan History</h3>
+          <p class="text-neutral-400 text-[11px] leading-relaxed">Integrate database to log historical scans, compare results, and track changes over time.</p>
+        </div>
+      </div>
+
+      <!-- Thank You -->
+      <div class="anim-up delay-7 mt-14">
+        <p class="text-3xl md:text-4xl font-black tracking-tighter text-white">Thank <span class="text-brand-red">You</span></p>
+        <p class="text-neutral-600 text-xs mt-2 font-mono">Kifayat Salam • Asif • Ishtiyak — MCA 2nd Year</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Navigation Controls -->
+<div class="fixed bottom-0 left-0 right-0 z-50">
+  <!-- Progress Bar -->
+  <div class="h-0.5 bg-neutral-900">
+    <div id="progressBar" class="h-full bg-gradient-to-r from-brand-red to-brand-accent transition-all duration-500 ease-out" style="width: 14.28%;"></div>
+  </div>
+
+  <div class="flex items-center justify-between px-6 md:px-12 py-4" style="background: linear-gradient(to top, #050505, rgba(5,5,5,0.95), transparent);">
+    <!-- Prev -->
+    <button id="prevBtn" onclick="changeSlide(-1)" class="flex items-center gap-2 text-neutral-500 hover:text-white transition-colors disabled:opacity-20 disabled:cursor-not-allowed" disabled>
+      <span class="iconify" data-icon="mdi:chevron-left" data-width="20"></span>
+      <span class="text-xs font-mono hidden md:inline">PREV</span>
+    </button>
+
+    <!-- Dots -->
+    <div class="flex items-center gap-2" id="dotContainer">
+      <div class="nav-dot active" onclick="goToSlide(0)"></div>
+      <div class="nav-dot" onclick="goToSlide(1)"></div>
+      <div class="nav-dot" onclick="goToSlide(2)"></div>
+      <div class="nav-dot" onclick="goToSlide(3)"></div>
+      <div class="nav-dot" onclick="goToSlide(4)"></div>
+      <div class="nav-dot" onclick="goToSlide(5)"></div>
+      <div class="nav-dot" onclick="goToSlide(6)"></div>
+    </div>
+
+    <!-- Next -->
+    <button id="nextBtn" onclick="changeSlide(1)" class="flex items-center gap-2 text-neutral-500 hover:text-white transition-colors disabled:opacity-20 disabled:cursor-not-allowed">
+      <span class="text-xs font-mono hidden md:inline">NEXT</span>
+      <span class="iconify" data-icon="mdi:chevron-right" data-width="20"></span>
+    </button>
+  </div>
+</div>
+
+<!-- Slide Counter -->
+<div class="fixed top-6 right-8 z-50 font-mono text-xs text-neutral-600">
+  <span id="currentNum" class="text-white">01</span> / <span id="totalNum">07</span>
+</div>
+
+<!-- Keyboard hint -->
+<div class="fixed top-6 left-8 z-50 font-mono text-[10px] text-neutral-700 hidden md:flex items-center gap-3">
+  <span class="px-1.5 py-0.5 rounded border border-neutral-800 text-neutral-600">←</span>
+  <span class="px-1.5 py-0.5 rounded border border-neutral-800 text-neutral-600">→</span>
+  <span>Navigate</span>
+</div>
+
+<script>
+  let currentSlide = 0;
+  const totalSlides = 7;
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.nav-dot');
+  const progressBar = document.getElementById('progressBar');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const currentNum = document.getElementById('currentNum');
+
+  function updateSlide() {
+    slides.forEach((s, i) => {
+      s.classList.remove('active');
+      if (i === currentSlide) {
+        s.classList.add('active');
+        // Re-trigger animations
+        s.querySelectorAll('.anim-up, .anim-left, .anim-right').forEach(el => {
+          el.style.animation = 'none';
+          el.offsetHeight; // trigger reflow
+          el.style.animation = '';
+        });
+      }
+    });
+
+    dots.forEach((d, i) => {
+      d.classList.toggle('active', i === currentSlide);
+    });
+
+    progressBar.style.width = ((currentSlide + 1) / totalSlides * 100) + '%';
+    prevBtn.disabled = currentSlide === 0;
+    nextBtn.disabled = currentSlide === totalSlides - 1;
+    currentNum.textContent = String(currentSlide + 1).padStart(2, '0');
+  }
+
+  function changeSlide(dir) {
+    const next = currentSlide + dir;
+    if (next >= 0 && next < totalSlides) {
+      currentSlide = next;
+      updateSlide();
+    }
+  }
+
+  function goToSlide(index) {
+    currentSlide = index;
+    updateSlide();
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      e.preventDefault();
+      changeSlide(1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      changeSlide(-1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      goToSlide(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      goToSlide(totalSlides - 1);
+    }
+  });
+
+  // Touch swipe support
+  let touchStartX = 0;
+  let touchEndX = 0;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, false);
+  document.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 60) {
+      changeSlide(diff > 0 ? 1 : -1);
+    }
+  }, false);
+
+  // Initialize
+  updateSlide();
+</script>
+
+</body>
+</html>
